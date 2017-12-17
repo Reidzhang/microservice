@@ -1,5 +1,5 @@
 // consignment-service/main.go
-package consignment_service
+package main
 
 import (
 	"log"
@@ -17,6 +17,7 @@ const (
 
 type IRepository interface {
 	Create(*pb.Consignment) (*pb.Consignment, error)
+	GetAll() []*pb.Consignment
 }
 
 // dummy datastore
@@ -28,6 +29,10 @@ func (repo *Repository) Create(consignment *pb.Consignment) (*pb.Consignment, er
 	updated := append(repo.consignments, consignment)
 	repo.consignments = updated
 	return consignment, nil
+}
+
+func (repo *Repository) GetAll() []*pb.Consignment {
+	return repo.consignments
 }
 
 type service struct {
@@ -44,6 +49,12 @@ func (s *service) CreateConsignment(ctx context.Context, req *pb.Consignment) (*
 	// protobuf definition
 	return &pb.Response{Created: true, Consignment: consignmnet}, nil
 }
+
+func (s *service) GetConsignments(ctx context.Context, req *pb.GetRequest) (*pb.Response, error) {
+	consignments := s.repo.GetAll()
+	return &pb.Response{Consignments: consignments}, nil
+}
+
 
 func main() {
 	repo := &Repository{}

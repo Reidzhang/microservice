@@ -5,10 +5,10 @@ import (
 	// Import the generated protobuf code
 	"fmt"
 
-	pb "microservice/consignment-service/proto/consignment"
+	pb "github.com/Reidzhang/microservice/consignment-service/proto/consignment"
 	micro "github.com/micro/go-micro"
 	"golang.org/x/net/context"
-	vessleProto "microservice/vessel-service/proto/vessel"
+	vessleProto "github.com/Reidzhang/microservice/vessel-service/proto/vessel"
 	"log"
 )
 

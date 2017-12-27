@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"context"
 
-	pb "microservice/vessel-service/proto/vessel"
+	pb "github.com/Reidzhang/microservice/vessel-service/proto/vessel"
 	"github.com/micro/go-micro"
 )
 

@@ -1,6 +1,6 @@
 FROM golang:1.9.0 as builder
 
-WORKDIR /go/src/microservice/consignment-cli
+WORKDIR /go/src/github/Reidzhang/microservice/consignment-cli
 
 COPY . .
 
@@ -16,6 +16,6 @@ RUN apk --no-cache add ca-certificates
 RUN mkdir /app
 WORKDIR /app
 COPY consignment.json /app/consignment.json
-COPY --from=builder /go/src/microservice/consignment-cli/consignment-cli .
+COPY --from=builder /go/src/github/Reidzhang/microservice/consignment-cli/consignment-cli .
 
 CMD ["./consignment-cli"]

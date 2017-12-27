@@ -8,6 +8,8 @@ import (
 	pb "microservice/consignment-service/proto/consignment"
 	micro "github.com/micro/go-micro"
 	"golang.org/x/net/context"
+	vessleProto "microservice/vessel-service/proto/vessel"
+	"log"
 )
 
 type Repository interface {
@@ -37,6 +39,7 @@ func (repo *ConsignmentRepository) GetAll() []*pb.Consignment {
 // to give you a better idea.
 type service struct {
 	repo Repository
+	vesselClient vessleProto.VesselServiceClient
 }
 
 // CreateConsignment - we created just one method on our service,
@@ -46,9 +49,17 @@ func (s *service) CreateConsignment(ctx context.Context, req *pb.Consignment, re
 
 	// Here we call a client instance of our vessel service with our consignment weight,
 	// and the amount of containers as the capacity value
+	vesselResponse, err := s.vesselClient.FindAvailable(context.Background(), &vessleProto.Specification{
+		MaxWeight: req.Weight,
+		Capacity: int32(len(req.Containers)),
+	})
+	log.Printf("Found vessel : %s \n", vesselResponse.Vessel.Name)
+	if err != nil {
+		return err
+	}
 	// We set the VesselId as the vessel we got back from our
 	// vessel service
-
+	req.VesselId = vesselResponse.Vessel.Id
 	// Save our consignment
 	consignment, err := s.repo.Create(req)
 	if err != nil {
@@ -79,12 +90,12 @@ func main() {
 		micro.Name("go.micro.srv.consignment"),
 		micro.Version("latest"),
 	)
-
+	vesselClient := vessleProto.NewVesselServiceClient("go.micro.srv.vessel", srv.Client())
 	// Init will parse the command line flags.
 	srv.Init()
 
 	// Register handler
-	pb.RegisterShippingServiceHandler(srv.Server(), &service{repo})
+	pb.RegisterShippingServiceHandler(srv.Server(), &service{repo, vesselClient})
 
 	// Run the server
 	if err := srv.Run(); err != nil {

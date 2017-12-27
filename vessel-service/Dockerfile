@@ -1,6 +1,7 @@
+# vessel-service/Dockerfile
 FROM golang:1.9.0 as builder
 
-WORKDIR /go/src/microservice/consignment-cli
+WORKDIR /go/src/microservice/vessel-service
 
 COPY . .
 
@@ -15,7 +16,6 @@ RUN apk --no-cache add ca-certificates
 
 RUN mkdir /app
 WORKDIR /app
-COPY consignment.json /app/consignment.json
-COPY --from=builder /go/src/microservice/consignment-cli/consignment-cli .
+COPY --from=builder /go/src/microservice/vessel-service/vessel-service .
 
-CMD ["./consignment-cli"]
+CMD ["./vessel-service"]

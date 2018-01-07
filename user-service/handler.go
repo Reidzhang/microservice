@@ -30,12 +30,11 @@ func (srv *service) GetAll(ctx context.Context, req *pb.Request, res *pb.Respons
 	return nil
 }
 
-func (srv *service) Auth(ctx context.Context, req *pb.User, res *pb.Response) error {
+func (srv *service) Auth(ctx context.Context, req *pb.User, res *pb.Token) error {
 	_, err := srv.repo.GetByEmailAndPassword(req)
 	if err != nil {
 		return err
 	}
-
 	res.Token = "testingabc"
 	return nil
 }
